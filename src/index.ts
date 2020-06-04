@@ -1,8 +1,10 @@
 import fs from "fs";
+import { config } from "dotenv";
 import { Client, Collection, TextChannel } from "discord.js";
-import { prefix, token, ownerID } from "../bot-config.json";
 import { Dokyumentēshon } from "./interfaces";
 
+config();
+const prefix = process.env.PREFIX!;
 const client: Dokyumentēshon = new Client();
 
 client.on("ready", () => console.log(`Ready and logged in as ${client.user!.tag}`));
@@ -17,7 +19,7 @@ client.on("message", async (message) => {
 		|| client.commands!.find(x => x.aliases.includes(command!));
 
 	if (cmd != null) {
-		if (cmd.ownerOnly && message.author.id !== ownerID) return;
+		if (cmd.ownerOnly && message.author.id !== process.env.OWNER_ID) return;
 
 		if (cmd.channelPermissions > 0 &&
 			!message.channel.permissionsFor(client.user!)!.has(cmd.channelPermissions))
@@ -45,7 +47,7 @@ client.on("guildCreate", async (guild) => {
 async function loadCommands() {
 	client.messages = new Map();	// Used for message edits.
 	client.commands = new Collection();
-	const files = fs.readdirSync("./dist/src/commands");
+	const files = fs.readdirSync("./dist/commands");
 
 	for (const file of files) {
 		const command = await import(`./commands/${file}`);
@@ -53,4 +55,4 @@ async function loadCommands() {
 	}
 }
 
-loadCommands().then(() => client.login(token));
+loadCommands().then(() => client.login(process.env.TOKEN));
