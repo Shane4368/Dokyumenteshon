@@ -1,0 +1,38 @@
+{
+	"name": "dokyumenteshon",
+	"version": "1.0.0",
+	"description": "A simple Discord docs bot for discord.js@stable and MDN.",
+	"main": "dist/src/index.js",
+	"dependencies": {
+		"discord.js": "^12.2.0",
+		"turndown": "^6.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^14.0.10",
+		"@types/node-fetch": "^2.5.7",
+		"@types/turndown": "^5.0.0",
+		"@types/ws": "^7.2.5"
+	},
+	"engines": {
+		"node": ">=12.0.0"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Shane4368/Dokyumenteshon.git"
+	},
+	"keywords": [
+		"discord.js",
+		"docs",
+		"mdn"
+	],
+	"author": "Shane4368",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Shane4368/Dokyumenteshon/issues"
+	},
+	"homepage": "https://github.com/Shane4368/Dokyumenteshon#readme",
+	"private": true
+}
