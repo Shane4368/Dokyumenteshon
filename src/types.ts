@@ -26,7 +26,7 @@ export type MDNResponse = {
 	URL: string
 };
 
-export type MessageEmbed = {
+export type MessageEmbedObject = {
 	title?: string;
 	description: string;
 	url: string;

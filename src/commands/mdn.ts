@@ -13,9 +13,9 @@ const MDN = {
 async function run(client: Dokyumentēshon, message: Message, args: string[]): Promise<void> {
 	if (args.length === 0) return;
 
-	const search = args.join(" ").replace(/#/g, ".prototype.");
+	const search = args[0].replace(/#/g, ".prototype.");
 
-	const response: MDNResponse = await fetch("https://mdn.pleb.xyz/search?q=" + encodeURI(search))
+	const response: MDNResponse = await fetch("https://mdn.pleb.xyz/search?q=" + search)
 		.then(x => x.json());
 
 	const embed = new MessageEmbed()
@@ -28,7 +28,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 	await sendMessage({
 		client,
 		commandMessage: message,
-		dataToSend: embed
+		dataToSend: { embed, content: null }
 	});
 }
 

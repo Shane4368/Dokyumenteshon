@@ -1,22 +1,47 @@
-import { Message } from "discord.js";
 import fetch from "node-fetch";
+import { Message } from "discord.js";
 import { sendMessage } from "../helpers/sendmessage";
 import { Dokyumentēshon } from "../interfaces";
-import { MessageEmbed } from "../types";
+import { MessageEmbedObject } from "../types";
 
 async function run(client: Dokyumentēshon, message: Message, args: string[]): Promise<void> {
 	if (args.length === 0) return;
 
-	const response: MessageEmbed = await fetch(
-		"https://djsdocs.sorta.moe/v2/embed?src=stable&q=" + encodeURI(args.join(" ").replace(/#/g, ".")))
+	let source = "stable";
+	const query = args[0];
+	const sources = ["stable", "master", "collection", "commando"];
+
+	if (args.length > 1) {
+		const inputSource = args[1].toLowerCase();
+
+		if (sources.includes(inputSource)) {
+			source = inputSource;
+		}
+		else {
+			await sendMessage({
+				client,
+				commandMessage: message,
+				dataToSend: {
+					content: "\\❌ An invalid source was provided.\nSources: " + sources.join(", "),
+					embed: null
+				}
+			});
+			return;
+		}
+	}
+
+	const response: MessageEmbedObject = await fetch(
+		`https://djsdocs.sorta.moe/v2/embed?src=${source}&q=${query.replace(/#/g, ".")}`)
 		.then(x => x.json());
+
+	if (response === null) return;
 
 	response.color = 0x2ecc71;
 
 	await sendMessage({
 		client,
 		commandMessage: message,
-		dataToSend: { embed: response }
+		dataToSend: { content: null, embed: response }
 	});
 }
 
@@ -27,7 +52,7 @@ export = {
 	description: "discord.js is a powerful [Node.js](https://nodejs.org/) module " +
 		"that allows you to easily interact with the [Discord API](https://discord.com/developers/docs/intro).\n" +
 		"This command searches [Discord.js](https://discord.js.org/#/) for the specified query.",
-	example: "docs `<query>`\n\nExamples:\n• docs client.user\n• docs guild#me",
+	example: "docs `<query>` `[source]`\n\nExamples:\n• docs client.user\n• docs collection#first collection",
 	ownerOnly: false,
 	channelPermissions: 18432	// SEND_MESSAGES, EMBED_LINKS
 };

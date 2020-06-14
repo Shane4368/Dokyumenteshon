@@ -9,24 +9,28 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 
 	if (args.length === 0) {
 		const cmds = client.commands!.filter(x => !x.ownerOnly).map(x => `\`${x.name}\``).join(", ");
+
 		embed.setDescription(cmds)
 			.setFooter("Specify a command for more info: docs help");
 	}
 	else {
-		const cmd = client.commands!.get(args[0]);
+		const commandName = args[0].toLowerCase();
 
-		if (cmd != null) {
-			embed.setDescription(
-				`Command: \`${cmd.name}\`\nAliases: ${cmd.aliases.map(x => `\`${x}\``).join(", ")}`)
-				.addField("Summary", cmd.description)
-				.addField("Usage", `Required: \`<>\` | Optional: \`[]\`\n\n❯ ${cmd.example}`);
-		}
+		const cmd = client.commands!.get(commandName)
+			|| client.commands!.find(x => x.aliases.includes(commandName));
+
+		if (cmd == null) return;
+
+		embed.setDescription(
+			`Command: \`${cmd.name}\`\nAliases: ${cmd.aliases.map(x => `\`${x}\``).join(", ")}`)
+			.addField("Summary", cmd.description)
+			.addField("Usage", `Required: \`<>\` | Optional: \`[]\`\n\n❯ ${cmd.example}`);
 	}
 
 	await sendMessage({
 		client,
 		commandMessage: message,
-		dataToSend: embed
+		dataToSend: { embed, content: null }
 	});
 }
 

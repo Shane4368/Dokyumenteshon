@@ -14,9 +14,9 @@ client.on("message", async (message) => {
 	if (message.channel.type === "dm") return;
 
 	const args = message.content.slice(prefix.length).split(/ +/g);
-	const command = args.shift();
-	const cmd = client.commands!.get(command!)
-		|| client.commands!.find(x => x.aliases.includes(command!));
+	const command = args.shift()!.toLowerCase();
+	const cmd = client.commands!.get(command)
+		|| client.commands!.find(x => x.aliases.includes(command));
 
 	if (cmd != null) {
 		if (cmd.ownerOnly && message.author.id !== process.env.OWNER_ID) return;
