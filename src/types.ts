@@ -1,8 +1,8 @@
-import { APIMessage, Client, Message, StringResolvable } from "discord.js";
+import { Message, MessageOptions } from "discord.js";
 import { Dokyumentēshon } from "./interfaces";
 
 export type Command = {
-	run: (client: Client, message: Message, args: string[]) => Promise<void>;
+	run: (client: Dokyumentēshon, message: Message, args: string[]) => Promise<void>;
 	name: string;
 	aliases: string[];
 	description: string;
@@ -12,18 +12,18 @@ export type Command = {
 };
 
 export type MDNResponse = {
-	ID: number,
-	Label: string,
-	Locale: string,
-	Modified: string,
-	Slug: string,
-	Subpages: unknown[] | null,
-	Summary: string,
-	Tags: string[],
-	Title: string,
-	Translations: MDNResponse[] | null,
-	UUID: string,
-	URL: string
+	ID: number;
+	Label: string;
+	Locale: string;
+	Modified: string;
+	Slug: string;
+	Subpages: unknown[] | null;
+	Summary: string;
+	Tags: string[];
+	Title: string;
+	Translations: MDNResponse[] | null;
+	UUID: string;
+	URL: string;
 };
 
 export type MessageEmbedObject = {
@@ -63,8 +63,10 @@ export type SendMessageData = {
 	 * The message that executed this command.
 	 */
 	commandMessage: Message;
-	/**
-	 * The data to send to Discord.
-	 */
-	dataToSend: StringResolvable | APIMessage;
+
+	messageOptions: NullablePartial<MessageOptions>;
+};
+
+type NullablePartial<T> = {
+	[P in keyof T]?: T[P] | null;
 };

@@ -21,7 +21,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 			await sendMessage({
 				client,
 				commandMessage: message,
-				dataToSend: {
+				messageOptions: {
 					content: "\\❌ An invalid source was provided.\nSources: " + sources.join(", "),
 					embed: null
 				}
@@ -41,7 +41,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 	await sendMessage({
 		client,
 		commandMessage: message,
-		dataToSend: { content: null, embed: response }
+		messageOptions: { content: null, embed: response }
 	});
 }
 

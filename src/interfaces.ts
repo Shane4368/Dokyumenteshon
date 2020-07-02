@@ -4,7 +4,7 @@ import { Command } from "./types";
 export interface Dokyumentēshon extends Client {
 	commands?: Collection<string, Command>;
 	/**
-	 * Map<commandMessageID, sentMessageID>
+	 * Map<command-message-id, sent-message-id>
 	 */
 	messages?: Map<string, string>;
 }

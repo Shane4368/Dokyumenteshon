@@ -9,7 +9,7 @@ const client: Dokyumentēshon = new Client();
 
 client.on("ready", () => console.log(`Ready and logged in as ${client.user!.tag}`));
 
-client.on("message", async (message) => {
+client.on("message", (message) => {
 	if (message.author.bot || !message.content.startsWith(prefix)) return;
 	if (message.channel.type === "dm") return;
 
@@ -25,19 +25,19 @@ client.on("message", async (message) => {
 			!message.channel.permissionsFor(client.user!)!.has(cmd.channelPermissions))
 			return;
 
-		await cmd.run(client, message, args).catch(console.error);
+		cmd.run(client, message, args).catch(console.error);
 	}
 });
 
-client.on("messageUpdate", async (before, after) => {
-	await client.listeners("message")[0](after);
+client.on("messageUpdate", (before, after) => {
+	client.listeners("message")[0](after);
 });
 
-client.on("guildCreate", async (guild) => {
+client.on("guildCreate", (guild) => {
 	const channel = guild.channels.cache.find(x => x.permissionsFor(guild.me!)!.has("SEND_MESSAGES"));
 
 	if (channel != null) {
-		await (channel as TextChannel).send(
+		(channel as TextChannel).send(
 			`My prefix is ${prefix}. ` +
 			`See ${prefix}help for the few things I can do for you.`
 		);

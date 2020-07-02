@@ -11,7 +11,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 		const cmds = client.commands!.filter(x => !x.ownerOnly).map(x => `\`${x.name}\``).join(", ");
 
 		embed.setDescription(cmds)
-			.setFooter("Specify a command for more info: docs help");
+			.setFooter("Specify a command for more info.\nExample: ??help docs");
 	}
 	else {
 		const commandName = args[0].toLowerCase();
@@ -30,7 +30,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 	await sendMessage({
 		client,
 		commandMessage: message,
-		dataToSend: { embed, content: null }
+		messageOptions: { embed, content: null }
 	});
 }
 

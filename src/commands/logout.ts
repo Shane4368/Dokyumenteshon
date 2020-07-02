@@ -1,6 +1,7 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
+import { Dokyumentēshon } from "../interfaces";
 
-async function run(client: Client, message: Message, args: string[]): Promise<void> {
+async function run(client: Dokyumentēshon, message: Message, args: string[]): Promise<void> {
 	client.destroy();
 }
 

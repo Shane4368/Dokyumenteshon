@@ -15,21 +15,30 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 
 	const search = args[0].replace(/#/g, ".prototype.");
 
-	const response: MDNResponse = await fetch("https://mdn.pleb.xyz/search?q=" + search)
-		.then(x => x.json());
+	try {
+		const response: MDNResponse = await fetch("https://mdn.pleb.xyz/search?q=" + search)
+			.then(x => x.json());
 
-	const embed = new MessageEmbed()
-		.setColor("ORANGE")
-		.setAuthor("MDN", MDN.iconURL)
-		.setTitle(response.Title)
-		.setURL(MDN.domain + response.URL)
-		.setDescription(new TurndownService().turndown(response.Summary));
+		const embed = new MessageEmbed()
+			.setColor("ORANGE")
+			.setAuthor("MDN", MDN.iconURL)
+			.setTitle(response.Title)
+			.setURL(MDN.domain + response.URL)
+			.setDescription(new TurndownService().turndown(response.Summary));
 
-	await sendMessage({
-		client,
-		commandMessage: message,
-		dataToSend: { embed, content: null }
-	});
+		await sendMessage({
+			client,
+			commandMessage: message,
+			messageOptions: { embed, content: null }
+		});
+	}
+	catch (error) {
+		console.error(error);
+
+		await message.channel.send(
+			"\\⚠️ An error occurred while retrieving the data. The server is probably down."
+		);
+	}
 }
 
 export = {
