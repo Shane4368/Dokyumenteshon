@@ -6,9 +6,10 @@
 	"dependencies": {
 		"discord.js": "^12.2.0",
 		"dotenv": "^8.2.0",
-		"turndown": "^6.0.0"
+		"mdn-scraper": "^1.0.6"
 	},
 	"devDependencies": {
+		"@types/dom-parser": "^0.1.0",
 		"@types/node": "^14.0.10",
 		"@types/node-fetch": "^2.5.7",
 		"@types/turndown": "^5.0.0",

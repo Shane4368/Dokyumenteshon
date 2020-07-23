@@ -11,21 +11,6 @@ export type Command = {
 	channelPermissions: number;
 };
 
-export type MDNResponse = {
-	ID: number;
-	Label: string;
-	Locale: string;
-	Modified: string;
-	Slug: string;
-	Subpages: unknown[] | null;
-	Summary: string;
-	Tags: string[];
-	Title: string;
-	Translations: MDNResponse[] | null;
-	UUID: string;
-	URL: string;
-};
-
 export type MessageEmbedObject = {
 	title?: string;
 	description: string;

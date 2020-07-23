@@ -1,9 +1,7 @@
-import fetch from "node-fetch";
-import TurndownService from "turndown";
 import { Message, MessageEmbed } from "discord.js";
 import { sendMessage } from "../helpers/sendmessage";
 import { Dokyumentēshon } from "../interfaces";
-import { MDNResponse } from "../types";
+import MDNScraper from "mdn-scraper";
 
 const MDN = {
 	iconURL: "https://i.imgur.com/DFGXabG.png",
@@ -13,18 +11,15 @@ const MDN = {
 async function run(client: Dokyumentēshon, message: Message, args: string[]): Promise<void> {
 	if (args.length === 0) return;
 
-	const search = args[0].replace(/#/g, ".prototype.");
-
 	try {
-		const response: MDNResponse = await fetch("https://mdn.pleb.xyz/search?q=" + search)
-			.then(x => x.json());
+		const response = await MDNScraper(args.join(" "));
 
 		const embed = new MessageEmbed()
 			.setColor("ORANGE")
 			.setAuthor("MDN", MDN.iconURL)
-			.setTitle(response.Title)
-			.setURL(MDN.domain + response.URL)
-			.setDescription(new TurndownService().turndown(response.Summary));
+			.setTitle(response.title)
+			.setURL(response.url)
+			.setDescription(response.parsed);
 
 		await sendMessage({
 			client,

@@ -4,7 +4,7 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Program",
+			"name": "Dokyumentēshon",
 			"program": "${workspaceFolder}\\dist\\index.js",
 			"preLaunchTask": "tsc: build - tsconfig.json",
 			"outFiles": [

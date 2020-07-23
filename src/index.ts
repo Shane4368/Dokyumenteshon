@@ -5,7 +5,11 @@ import { Dokyumentēshon } from "./interfaces";
 
 config();
 const prefix = process.env.PREFIX!;
-const client: Dokyumentēshon = new Client();
+const client: Dokyumentēshon = new Client({
+	ws: {
+		intents: ["GUILDS", "GUILD_MESSAGES"]
+	}
+});
 
 client.on("ready", () => console.log(`Ready and logged in as ${client.user!.tag}`));
 
