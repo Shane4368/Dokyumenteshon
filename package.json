@@ -6,7 +6,7 @@
 	"dependencies": {
 		"discord.js": "^12.2.0",
 		"dotenv": "^8.2.0",
-		"mdn-scraper": "^1.0.6"
+		"mdn-scraper": "^1.0.0"
 	},
 	"devDependencies": {
 		"@types/dom-parser": "^0.1.0",
