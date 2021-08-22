@@ -1,7 +1,7 @@
+import { default as MDNScraper, Result } from "mdn-scraper";
 import { Message, MessageEmbed } from "discord.js";
-import { sendMessage } from "../helpers/sendmessage";
+import { sendMessage } from "../helpers/sendmessage.js";
 import { Dokyumentēshon } from "../interfaces";
-import MDNScraper from "mdn-scraper";
 
 const MDN = {
 	iconURL: "https://i.imgur.com/DFGXabG.png",
@@ -12,7 +12,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 	if (args.length === 0) return;
 
 	try {
-		const response = await MDNScraper(args.join(" "));
+		const response = await (MDNScraper as any).default(args.join(" ")) as Result;
 
 		const embed = new MessageEmbed()
 			.setColor("ORANGE")
@@ -36,7 +36,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 	}
 }
 
-export = {
+export default {
 	run,
 	name: "mdn",
 	aliases: [],

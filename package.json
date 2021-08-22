@@ -3,10 +3,11 @@
 	"version": "1.0.0",
 	"description": "A simple Discord docs bot for discord.js@stable and MDN.",
 	"main": "dist/src/index.js",
+	"type": "module",
 	"dependencies": {
 		"discord.js": "^12.2.0",
-		"dotenv": "^8.2.0",
-		"mdn-scraper": "^1.0.0"
+		"dotenv": "^10.0.0",
+		"mdn-scraper": "^1.0.4"
 	},
 	"devDependencies": {
 		"@types/dom-parser": "^0.1.0",
@@ -14,14 +15,14 @@
 		"@types/node-fetch": "^2.5.7",
 		"@types/turndown": "^5.0.0",
 		"@types/ws": "^7.2.5",
-		"typescript": "^3.9.3"
+		"typescript": "^4.3.5"
 	},
 	"engines": {
-		"node": "12.x"
+		"node": "14.x"
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "node_modules/.bin/tsc",
+		"build": "tsc",
 		"start": "node dist/index.js"
 	},
 	"repository": {

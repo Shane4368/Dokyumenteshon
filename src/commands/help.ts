@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import { sendMessage } from "../helpers/sendmessage";
+import { sendMessage } from "../helpers/sendmessage.js";
 import { Dokyumentēshon } from "../interfaces";
 
 async function run(client: Dokyumentēshon, message: Message, args: string[]): Promise<void> {
@@ -34,7 +34,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 	});
 }
 
-export = {
+export default {
 	run,
 	name: "help",
 	aliases: ["assist"],

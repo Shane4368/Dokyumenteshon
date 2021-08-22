@@ -5,7 +5,7 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 	client.destroy();
 }
 
-export = {
+export default {
 	run,
 	name: "logout",
 	aliases: ["disconnect"],

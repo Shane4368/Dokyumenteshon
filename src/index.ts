@@ -2,6 +2,7 @@ import fs from "fs";
 import { config } from "dotenv";
 import { Client, Collection, TextChannel } from "discord.js";
 import { Dokyumentēshon } from "./interfaces";
+import { Command } from "./types";
 
 config();
 const prefix = process.env.PREFIX!;
@@ -54,7 +55,7 @@ async function loadCommands() {
 	const files = fs.readdirSync("./dist/commands");
 
 	for (const file of files) {
-		const command = await import(`./commands/${file}`);
+		const command = (await import(`./commands/${file}`)).default as Command;
 		client.commands.set(command.name, command);
 	}
 }

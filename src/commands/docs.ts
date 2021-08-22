@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import { Message } from "discord.js";
-import { sendMessage } from "../helpers/sendmessage";
+import { sendMessage } from "../helpers/sendmessage.js";
 import { Dokyumentēshon } from "../interfaces";
 import { MessageEmbedObject } from "../types";
 
@@ -38,6 +38,8 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 
 	response.color = 0x2ecc71;
 
+	response.fields?.forEach(x => x.value = truncate(x.value));
+
 	await sendMessage({
 		client,
 		commandMessage: message,
@@ -45,7 +47,14 @@ async function run(client: Dokyumentēshon, message: Message, args: string[]): P
 	});
 }
 
-export = {
+function truncate(text: string): string {
+	const maxLength = 1024;
+	if (text.length <= maxLength) return text;
+	text = text.substring(0, maxLength - 3).trimEnd();
+	return text.substring(0, text.lastIndexOf(" ")) + "...";
+}
+
+export default {
 	run,
 	name: "docs",
 	aliases: ["djs"],
