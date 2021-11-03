@@ -1,63 +1,42 @@
 import fs from "fs";
 import { config } from "dotenv";
-import { Client, Collection, TextChannel } from "discord.js";
+import { Client, Collection, CommandInteractionOptionResolver, Intents } from "discord.js";
 import { Dokyumentēshon } from "./interfaces";
 import { Command } from "./types";
 
 config();
-const prefix = process.env.PREFIX!;
+
 const client: Dokyumentēshon = new Client({
-	ws: {
-		intents: ["GUILDS", "GUILD_MESSAGES"]
-	}
+	intents: [Intents.FLAGS.GUILDS]
 });
 
 client.on("ready", () => console.log(`Ready and logged in as ${client.user!.tag}`));
 
-client.on("message", (message) => {
-	if (message.author.bot || !message.content.startsWith(prefix)) return;
-	if (message.channel.type === "dm") return;
+client.on("interactionCreate", (interaction) => {
+	if (!interaction.isCommand() || !interaction.inGuild()) return;
 
-	const args = message.content.slice(prefix.length).split(/ +/g);
-	const command = args.shift()!.toLowerCase();
-	const cmd = client.commands!.get(command)
-		|| client.commands!.find(x => x.aliases.includes(command));
+	const cmd = client.commands!.get(interaction.commandName);
 
 	if (cmd != null) {
-		if (cmd.ownerOnly && message.author.id !== process.env.OWNER_ID) return;
+		if (cmd.ownerOnly && interaction.user.id !== process.env.OWNER_ID) return;
 
-		if (cmd.channelPermissions > 0 &&
-			!message.channel.permissionsFor(client.user!)!.has(cmd.channelPermissions))
-			return;
-
-		cmd.run(client, message, args).catch(console.error);
-	}
-});
-
-client.on("messageUpdate", (before, after) => {
-	client.listeners("message")[0](after);
-});
-
-client.on("guildCreate", (guild) => {
-	const channel = guild.channels.cache.find(x => x.permissionsFor(guild.me!)!.has("SEND_MESSAGES"));
-
-	if (channel != null) {
-		(channel as TextChannel).send(
-			`My prefix is ${prefix}. ` +
-			`See ${prefix}help for the few things I can do for you.`
-		);
+		cmd.run(
+			client,
+			interaction,
+			interaction.options as CommandInteractionOptionResolver
+		).catch(console.error);
 	}
 });
 
 async function loadCommands() {
-	client.messages = new Map();	// Used for message edits.
 	client.commands = new Collection();
 	const files = fs.readdirSync("./dist/commands");
 
 	for (const file of files) {
 		const command = (await import(`./commands/${file}`)).default as Command;
-		client.commands.set(command.name, command);
+		client.commands.set(command.data.name, command);
 	}
 }
 
-loadCommands().then(() => client.login(process.env.TOKEN));
+await loadCommands();
+await client.login(process.env.TOKEN);

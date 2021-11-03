@@ -1,59 +1,14 @@
-import { Message, MessageOptions } from "discord.js";
+import { CommandInteraction, CommandInteractionOptionResolver } from "discord.js";
+import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 import { Dokyumentēshon } from "./interfaces";
 
 export type Command = {
-	run: (client: Dokyumentēshon, message: Message, args: string[]) => Promise<void>;
-	name: string;
-	aliases: string[];
+	run: (client: Dokyumentēshon, interaction: CommandInteraction, options: CommandInteractionOptionResolver) => Promise<void>;
 	description: string;
 	example: string | null;
 	ownerOnly: boolean;
 	channelPermissions: number;
-};
-
-export type MessageEmbedObject = {
-	title?: string;
-	description: string;
-	url: string;
-	timestamp?: number;
-	color: number;
-	footer?: {
-		text?: string;
-		icon_url?: string;
-	};
-	image?: {
-		url: string;
-	};
-	thumbnail?: {
-		url: string;
-	};
-	author: {
-		name: string;
-		icon_url: string;
-		url: string;
-	};
-	fields?: {
-		name: string;
-		value: string;
-		inline?: boolean;
-	}[];
-};
-
-export type SendMessageData = {
-	/**
-	 * Main hub for interacting with Discord's API.
-	 */
-	client: Dokyumentēshon;
-	/**
-	 * The message that executed this command.
-	 */
-	commandMessage: Message;
-
-	messageOptions: NullablePartial<MessageOptions>;
-};
-
-type NullablePartial<T> = {
-	[P in keyof T]?: T[P] | null;
+	data: RESTPostAPIApplicationCommandsJSONBody;
 };
 
 /**
@@ -69,9 +24,10 @@ export type NPMSPackageResponse = {
 			description: string;
 			keywords: string[];
 			date: string;
-			author: {
+			author?: {
 				name: string;
 				email?: string;
+				url?: string;
 				username?: string;
 			};
 			publisher: {
@@ -93,15 +49,17 @@ export type NPMSPackageResponse = {
 				bugs: string;
 			};
 			license: string;
-			dependencies: { [key: string]: string; };
-			devDependencies: { [key: string]: string; };
+			dependencies?: { [key: string]: string; };
+			devDependencies?: { [key: string]: string; };
+			peerDependencies?: { [key: string]: string; };
 			releases: {
 				from: string;
 				to: string;
 				count: number;
 			}[];
-			hasTestScript: boolean;
-			hasSelectiveFiles: boolean;
+			hasTestScript?: boolean;
+			hasSelectiveFiles?: boolean;
+			readme?: string;
 		};
 		npm: {
 			downloads: {
@@ -132,14 +90,32 @@ export type NPMSPackageResponse = {
 				to: string;
 				count: number;
 			}[];
+			statuses?: {
+				context: string;
+				state: string;
+			}[];
 		};
 		source?: {
 			files: {
 				readmeSize: number;
 				testsSize: number;
-				hasChangelog: boolean;
+				hasChangelog?: boolean;
+				hasNpmIgnore?: boolean;
 			};
+			badges?: {
+				urls: {
+					original: string;
+					shields: string;
+					content: string;
+				};
+				info: {
+					service: string;
+					type: string;
+					modifiers: { [key: string]: string; };
+				};
+			}[];
 			linters: string[];
+			coverage?: number;
 			outdatedDependencies: {
 				[key: string]: {
 					required: string;

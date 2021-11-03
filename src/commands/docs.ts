@@ -1,50 +1,31 @@
 import fetch from "node-fetch";
-import { Message } from "discord.js";
-import { sendMessage } from "../helpers/sendmessage.js";
-import { Dokyumentēshon } from "../interfaces";
-import { MessageEmbedObject } from "../types";
+import { CommandInteraction, CommandInteractionOptionResolver } from "discord.js";
+import type { APIEmbed } from "discord-api-types";
+import type { Dokyumentēshon } from "../interfaces";
+import type { Command } from "../types";
 
-async function run(client: Dokyumentēshon, message: Message, args: string[]): Promise<void> {
-	if (args.length === 0) return;
+async function run(client: Dokyumentēshon, interaction: CommandInteraction, options: CommandInteractionOptionResolver): Promise<void> {
+	const query = options.getString("query")!;
+	const source = options.getString("source") ?? "stable";
 
-	let source = "stable";
-	const query = args[0];
-	const sources = ["stable", "master", "collection", "commando"];
-
-	if (args.length > 1) {
-		const inputSource = args[1].toLowerCase();
-
-		if (sources.includes(inputSource)) {
-			source = inputSource;
-		}
-		else {
-			await sendMessage({
-				client,
-				commandMessage: message,
-				messageOptions: {
-					content: "\\❌ An invalid source was provided.\nSources: " + sources.join(", "),
-					embed: null
-				}
-			});
-			return;
-		}
-	}
-
-	const response: MessageEmbedObject = await fetch(
+	const response: APIEmbed = await fetch(
 		`https://djsdocs.sorta.moe/v2/embed?src=${source}&q=${query.replace(/#/g, ".")}`)
 		.then(x => x.json());
 
-	if (response === null) return;
+	if (response === null) {
+		await interaction.reply({
+			content: "No results were found. Try specifying a different source.",
+			ephemeral: true
+		});
+
+		return;
+	}
 
 	response.color = 0x2ecc71;
 
 	response.fields?.forEach(x => x.value = truncate(x.value));
 
-	await sendMessage({
-		client,
-		commandMessage: message,
-		messageOptions: { content: null, embed: response }
-	});
+	await interaction.reply({ embeds: [response] });
 }
 
 function truncate(text: string): string {
@@ -56,12 +37,33 @@ function truncate(text: string): string {
 
 export default {
 	run,
-	name: "docs",
-	aliases: ["djs"],
 	description: "discord.js is a powerful [Node.js](https://nodejs.org/) module " +
 		"that allows you to easily interact with the [Discord API](https://discord.com/developers/docs/intro).\n" +
 		"This command searches [Discord.js](https://discord.js.org/#/) for the specified query.",
 	example: "docs `<query>` `[source]`\n\nExamples:\n• docs client.user\n• docs collection#first collection",
 	ownerOnly: false,
-	channelPermissions: 18432	// SEND_MESSAGES, EMBED_LINKS
-};
+	channelPermissions: 18432,	// SEND_MESSAGES, EMBED_LINKS
+	data: {
+		name: "docs",
+		description: "Search Discord.js official docs",
+		options: [
+			{
+				name: "query",
+				description: "The string to search for",
+				type: 3,
+				required: true
+			},
+			{
+				name: "source",
+				description: "The package to search in",
+				type: 3,
+				choices: [
+					{ name: "discord.js@latest", value: "stable" },
+					{ name: "discord.js@dev", value: "master" },
+					{ name: "@discordjs/collection", value: "collection" },
+					{ name: "discord.js-commando", value: "commando" }
+				]
+			}
+		]
+	}
+} as Command;
